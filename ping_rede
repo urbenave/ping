@@ -1,0 +1,30 @@
+import subprocess
+import ipaddress
+import datetime
+
+# Cria um objeto de rede
+network = ipaddress.ip_network(input("Digite a rede: "))
+f = open('codins_report.txt', 'w')
+now = datetime.datetime.now()
+time_only = now.strftime("%H:%M:%S")
+
+
+
+for ip in network.hosts():
+    try:
+        # Executa o comando ping
+        resultado = subprocess.run(['ping', '-n', '1', '-w', '1', str(ip)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+         # Retorna 1 se o ping foi bem-sucedido, caso contrário, retorna 0
+        if resultado.returncode == 0:
+             print (ip,"\033[32monline\33[0m")  # Sucesso
+             print(ip, " online ",time_only, file=f)
+        else:
+             print (ip,"\033[31moffline\33[0m")  # Falha
+        #print(ip, " offline ",time_only, file=f)
+    except Exception as e:
+        print(f"Erro ao pingar {network.hosts()}: {e}")
+        print ('Erro')  # Retorna 0 em caso de erro
+
+#if __name__ == "__main__":
+#    resultado = ping(network)
+#    print(resultado)
